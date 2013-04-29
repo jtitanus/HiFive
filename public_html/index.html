@@ -1,0 +1,65 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MyTest</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style>
+            body {
+                margin: 0px;
+                padding: 0px;
+                background: #d0d6dc;
+            }
+            #myCanvas {
+                border: 1px solid #9C9898;
+            }
+        </style>
+        <script type="text/javascript" src="js/drawing.js"></script>
+        <script type="text/javascript" src="js/population.js"></script>
+        <script type="text/javascript" src="js/nameGen.js"></script>
+    </head>
+    <body>
+        <div>Hallo Welt</div>
+        <div id="outdiv">Anzahl: </div>
+        <canvas id="myCanvas" height="400" width="600" ></canvas>
+        <script>
+            var pop = new Population(100);
+            var odiv = document.getElementById("outdiv");
+            odiv.innerText = "Anzahl: " + pop.Persons.length;
+
+            var canvas = document.getElementById('myCanvas');
+            var context = canvas.getContext('2d');        
+            
+
+            window.requestAnimFrame = (function(callback) {
+                return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+                        function(callback) {
+                            window.setTimeout(callback, 1000);
+                        };
+            })();
+
+            function animate() {
+                var canvas = document.getElementById('myCanvas');
+                var context = canvas.getContext('2d');
+
+                // update
+                pop.update();
+
+                // clear
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                // draw stuff
+                pop.draw(context);
+
+                // request new frame
+                requestAnimFrame(function() {
+                    animate();
+                });
+            }
+            animate();
+        </script>
+    </body>
+</html>
