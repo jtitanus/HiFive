@@ -88,8 +88,8 @@ function Population(startCount) {
 
         }
     };
-
-    this.draw = function(canvasContext) {
+    
+    this.draw = function(canvasContext, updateStatsCallback) {
         for (var i = 0; i < this.Persons.length; i++) {
             canvasContext.beginPath();
             if (this.Persons[i].Status === this.Persons[i].STATUS_ALIVE) {
@@ -143,6 +143,9 @@ function Population(startCount) {
                 }
             }
         }
+
+        if(updateStatsCallback !== undefined && typeof updateStatsCallback === 'function')  updateStatsCallback();
     };
+
 }
 ;

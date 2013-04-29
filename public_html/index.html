@@ -22,8 +22,8 @@ and open the template in the editor.
         <script type="text/javascript" src="js/nameGen.js"></script>
     </head>
     <body>
-        <div>Hallo Welt</div>
-        <div id="outdiv">Anzahl: </div>
+        <div>Anzahl:  </div>
+        <div id="outdiv"></div>
         <canvas id="myCanvas" height="400" width="600" ></canvas>
         <script>
             var pop = new Population(100);
@@ -32,7 +32,6 @@ and open the template in the editor.
 
             var canvas = document.getElementById('myCanvas');
             var context = canvas.getContext('2d');        
-            
 
             window.requestAnimFrame = (function(callback) {
                 return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
@@ -52,7 +51,9 @@ and open the template in the editor.
                 context.clearRect(0, 0, canvas.width, canvas.height);
 
                 // draw stuff
-                pop.draw(context);
+                pop.draw(context, function() {
+                    odiv.innerText = pop.Persons.length;
+                });
 
                 // request new frame
                 requestAnimFrame(function() {
