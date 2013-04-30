@@ -1,7 +1,3 @@
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,6 +8,8 @@ and open the template in the editor.
                 margin: 0px;
                 padding: 0px;
                 background: #d0d6dc;
+                font-family: sans-serif;
+                font-size: smaller;
             }
             #myCanvas {
                 border: 1px solid #9C9898;
@@ -33,8 +31,9 @@ and open the template in the editor.
                     <canvas id="myCanvas" height="400" width="600" ></canvas>                            
                 </td>
                 <td>
-                    <p>Person</p>
-                    <table>
+                    
+                    <table id="personInfo">
+                        <tr>Person</tr>
                         <tr>
                             <td>Age</td>
                             <td id="personAge"></td>
@@ -46,7 +45,7 @@ and open the template in the editor.
                     </table>                    
                 </td>
             </tr>
-        </table>
+        </table> 
         <script>
             var pop = new Population(100);
             var odiv = document.getElementById("outdiv");
@@ -94,12 +93,16 @@ and open the template in the editor.
 
             function setPersonInfo(person) {
                 if (person !== null) {
+                    document.getElementById("personInfo").style.visibility="visible";
                     document.getElementById("personAge").innerText = person.Age;
                     document.getElementById("personStatus").innerText = person.getStatusString();
                 }
+                else {
+                    document.getElementById("personInfo").style.visibility="collapse";
+                }
             }
 
-            canvas.addEventListener('click', function(evt) {
+            canvas.addEventListener("click", function(evt) {
                 var mousePos = getMousePos(canvas, evt);
                 var person = pop.getPerson(mousePos.x, mousePos.y);
                 setPersonInfo(person);
