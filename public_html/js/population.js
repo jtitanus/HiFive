@@ -9,8 +9,9 @@ function Person() {
     this.STATUS_DEAD = 0;
     this.MALE = 0;
     this.FEMALE = 1;
-    this.Status = this.STATUS_ALIVE;
+    this.Status = this.STATUS_ALIVE; // warning, new state definitions may lead to side effects
     this.Sex = Math.round(Math.random());
+    this.ChildrenCount = 0;
 
     this.getStatusString = function() {
         if (this.Status === this.STATUS_ALIVE) {
@@ -19,7 +20,7 @@ function Person() {
         else {
             return "Dead";
         }
-    }
+    };
 
     this.update = function() {
         if (this.Status === this.STATUS_ALIVE) {
@@ -43,10 +44,14 @@ function Person() {
             retval = "lightgreen";
         else if (this.Age < 20)
             retval = "green";
-        else if (this.Age < 35)
+        else if (this.Age < 30)
+            retval = "greenyellow";
+        else if (this.Age < 40)
             retval = "yellow";
         else if (this.Age < 50)
             retval = "orange";
+        else if (this.Age < 60)
+            retval = "GoldenRod";
         else if (this.Age < 70)
             retval = "red";
         else if (this.Age < 100)
@@ -59,6 +64,8 @@ function Person() {
 
 function Population(startCount) {
     this.Persons = [startCount];
+    this.Stats = new PopulationStatistics();
+    
     for (var i = 0; i < startCount; i++) {
         this.Persons[i] = new Person();
     }
@@ -94,12 +101,14 @@ function Population(startCount) {
                         p.X = Math.random() * 2 * ((this.Persons[i].X + this.Persons[i].Partner.X) / 2);
                         p.Y = Math.random() * 2 * ((this.Persons[i].Y + this.Persons[i].Partner.Y) / 2);
                         this.Persons[this.Persons.length] = p;
+
+                        this.Persons[i].ChildrenCount++;
+                        this.Persons[i].Partner.ChildrenCount++;
                     }
                 }
             }
-
-
         }
+        this.Stats.update(this);
     };
 
     this.getPerson = function(x, y) {
@@ -170,8 +179,9 @@ function Population(startCount) {
             }
         }
 
-        if (updateStatsCallback !== undefined && typeof updateStatsCallback === 'function')
+        if (updateStatsCallback !== undefined && typeof updateStatsCallback === 'function') {
             updateStatsCallback();
+        }
     };
 
 }

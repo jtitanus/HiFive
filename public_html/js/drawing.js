@@ -15,3 +15,11 @@ function drawCircle() {
     context.strokeStyle = '#003300';
     context.stroke();
 }
+
+function drawSelectedPersonMarker(context, x, y) {          
+    context.beginPath();
+    context.arc(x, y, 10, 0, 2 * Math.PI, false);    
+    context.lineWidth = 1;
+    context.strokeStyle = "lime";
+    context.stroke();
+}

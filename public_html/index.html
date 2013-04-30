@@ -19,21 +19,37 @@
             }
         </style>
         <script type="text/javascript" src="js/drawing.js"></script>
+        <script type="text/javascript" src="js/populationStatistics.js"></script>
         <script type="text/javascript" src="js/population.js"></script>
-        <script type="text/javascript" src="js/nameGen.js"></script>
+        <script type="text/javascript" src="js/nameGen.js"></script>        
     </head>
     <body>
-        <div>Anzahl:  </div>
-        <div id="outdiv"></div>
+        <table>
+            <tr>
+                <td>Anzahl</td>
+                <td id="popCount"></td>
+            </tr>
+            <tr>
+                <td>Alive</td>
+                <td id="popAliveCount"></td>
+            </tr>
+            <tr>
+                <td>Dead</td>
+                <td id="popDeadCount"></td>
+            </tr>
+            <tr>
+                <td>Oldest Person</td>
+                <td id="popOldestPersonAge"></td>
+            </tr>
+        </table>        
         <table>
             <tr>
                 <td>
-                    <canvas id="myCanvas" height="400" width="600" ></canvas>                            
+                    <canvas id="myCanvas" height="400" width="600"></canvas>                            
                 </td>
-                <td>
-                    
+                <td>                    
                     <table id="personInfo">
-                        <tr>Person</tr>
+                        <tr><td>Person</td><td></td></tr>
                         <tr>
                             <td>Age</td>
                             <td id="personAge"></td>
@@ -42,15 +58,21 @@
                             <td>Status</td>
                             <td id="personStatus"></td>
                         </tr>
+                        <tr>
+                            <td>Children</td>
+                            <td id="personChildrenCount"></td>
+                        </tr>
                     </table>                    
                 </td>
             </tr>
         </table> 
         <script>
             var pop = new Population(100);
-            var odiv = document.getElementById("outdiv");
+            var odiv = document.getElementById("popCount");
             odiv.innerText = "Anzahl: " + pop.Persons.length;
-
+            
+            var currentPerson = null;
+            
             var canvas = document.getElementById('myCanvas');
             var context = canvas.getContext('2d');
 
@@ -72,9 +94,11 @@
                 context.clearRect(0, 0, canvas.width, canvas.height);
 
                 // draw stuff
-                pop.draw(context, function() {
-                    odiv.innerText = pop.Persons.length;
-                });
+                pop.draw(context);
+                
+                // update gauges
+                updateStats(pop);
+                setPersonInfo(currentPerson);                
 
                 // request new frame
                 requestAnimFrame(function() {
@@ -91,11 +115,21 @@
                 };
             }
 
+            function updateStats(population){
+                document.getElementById("popCount").innerText = population.Persons.length;
+                document.getElementById("popAliveCount").innerText = population.Stats.LivingCount;
+                document.getElementById("popDeadCount").innerText = population.Stats.DeadCount;
+                document.getElementById("popOldestPersonAge").innerText = population.Stats.OldestLivingPerson === null? "" : population.Stats.OldestLivingPerson.Age;                
+            }
+            
             function setPersonInfo(person) {
                 if (person !== null) {
                     document.getElementById("personInfo").style.visibility="visible";
                     document.getElementById("personAge").innerText = person.Age;
                     document.getElementById("personStatus").innerText = person.getStatusString();
+                    document.getElementById("personChildrenCount").innerText = person.ChildrenCount;   
+                    
+                    drawSelectedPersonMarker(context, person.X, person.Y);
                 }
                 else {
                     document.getElementById("personInfo").style.visibility="collapse";
@@ -104,8 +138,8 @@
 
             canvas.addEventListener("click", function(evt) {
                 var mousePos = getMousePos(canvas, evt);
-                var person = pop.getPerson(mousePos.x, mousePos.y);
-                setPersonInfo(person);
+                currentPerson = pop.getPerson(mousePos.x, mousePos.y);
+                setPersonInfo(currentPerson);
             }, false);
 
 
