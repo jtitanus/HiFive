@@ -16,6 +16,9 @@ and open the template in the editor.
             #myCanvas {
                 border: 1px solid #9C9898;
             }
+            td {
+                vertical-align: top;
+            }
         </style>
         <script type="text/javascript" src="js/drawing.js"></script>
         <script type="text/javascript" src="js/population.js"></script>
@@ -24,14 +27,33 @@ and open the template in the editor.
     <body>
         <div>Anzahl:  </div>
         <div id="outdiv"></div>
-        <canvas id="myCanvas" height="400" width="600" ></canvas>
+        <table>
+            <tr>
+                <td>
+                    <canvas id="myCanvas" height="400" width="600" ></canvas>                            
+                </td>
+                <td>
+                    <p>Person</p>
+                    <table>
+                        <tr>
+                            <td>Age</td>
+                            <td id="personAge"></td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td id="personStatus"></td>
+                        </tr>
+                    </table>                    
+                </td>
+            </tr>
+        </table>
         <script>
             var pop = new Population(100);
             var odiv = document.getElementById("outdiv");
             odiv.innerText = "Anzahl: " + pop.Persons.length;
 
             var canvas = document.getElementById('myCanvas');
-            var context = canvas.getContext('2d');        
+            var context = canvas.getContext('2d');
 
             window.requestAnimFrame = (function(callback) {
                 return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
@@ -61,6 +83,29 @@ and open the template in the editor.
                 });
             }
             animate();
-        </script>
+
+            function getMousePos(canvas, evt) {
+                var rect = canvas.getBoundingClientRect();
+                return {
+                    x: evt.clientX - rect.left,
+                    y: evt.clientY - rect.top
+                };
+            }
+
+            function setPersonInfo(person) {
+                if (person !== null) {
+                    document.getElementById("personAge").innerText = person.Age;
+                    document.getElementById("personStatus").innerText = person.getStatusString();
+                }
+            }
+
+            canvas.addEventListener('click', function(evt) {
+                var mousePos = getMousePos(canvas, evt);
+                var person = pop.getPerson(mousePos.x, mousePos.y);
+                setPersonInfo(person);
+            }, false);
+
+
+        </script>        
     </body>
 </html>

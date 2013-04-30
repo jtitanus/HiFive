@@ -12,23 +12,36 @@ function Person() {
     this.Status = this.STATUS_ALIVE;
     this.Sex = Math.round(Math.random());
 
-    this.update = function() {
-        this.Age += 1;
+    this.getStatusString = function() {
+        if (this.Status === this.STATUS_ALIVE) {
+            return "Alive";
+        }
+        else {
+            return "Dead";
+        }
+    }
 
-        // life expectancy -> grim reaper
-        var qx = this.Age / 200;
-        if (this.Status === this.STATUS_ALIVE && Math.random() < qx) {
-            this.Status = this.STATUS_DEAD;
-            if (this.Partner !== null) {
-                this.Partner.Partner = null;
-                this.Partner = null;
+    this.update = function() {
+        if (this.Status === this.STATUS_ALIVE) {
+            this.Age += 1;
+
+            // life expectancy -> grim reaper
+            var qx = this.Age / 200;
+            if (Math.random() < qx) {
+                this.Status = this.STATUS_DEAD;
+                if (this.Partner !== null) {
+                    this.Partner.Partner = null;
+                    this.Partner = null;
+                }
             }
         }
     };
 
     this.getColor = function() {
         var retval = "black";
-        if (this.Age < 20)
+        if (this.Age < 10)
+            retval = "lightgreen";
+        else if (this.Age < 20)
             retval = "green";
         else if (this.Age < 35)
             retval = "yellow";
@@ -88,7 +101,20 @@ function Population(startCount) {
 
         }
     };
-    
+
+    this.getPerson = function(x, y) {
+        var person = null;
+
+        for (var i = 0; i < this.Persons.length; i++) {
+            if (this.Persons[i].X < x + 3 && this.Persons[i].X > x - 3
+                    && this.Persons[i].Y < y + 4 && this.Persons[i].Y > y - 3
+                    ) {
+                person = this.Persons[i];
+            }
+        }
+        return person;
+    };
+
     this.draw = function(canvasContext, updateStatsCallback) {
         for (var i = 0; i < this.Persons.length; i++) {
             canvasContext.beginPath();
@@ -144,7 +170,8 @@ function Population(startCount) {
             }
         }
 
-        if(updateStatsCallback !== undefined && typeof updateStatsCallback === 'function')  updateStatsCallback();
+        if (updateStatsCallback !== undefined && typeof updateStatsCallback === 'function')
+            updateStatsCallback();
     };
 
 }
